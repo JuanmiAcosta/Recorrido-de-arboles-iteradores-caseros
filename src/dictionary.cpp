@@ -154,25 +154,43 @@ int Dictionary::getTotalUsages(const char c){
 //                                 Iterator                                  //
 ///////////////////////////////////////////////////////////////////////////////
 
+/**
+      @brief Constructor por defecto del iterador de diccionario.
+      @post La current word será vacía, y el iterador interno de tree<char_info> usa el constructor po defecto.
+**/
 Dictionary::iterator::iterator() {
     this->curr_word="";
     this->iter = tree<char_info>::const_preorder_iterator();
 }
 
+/**
+      @brief Constructor de copia del iterador de diccionario.
+      @param iter es un iterador de tree<char_info>.
+      @post También pone la current word vacía e iguala el iterador interno al pasado como argumento.
+**/
 Dictionary::iterator::iterator(tree<char_info>::const_preorder_iterator iter) {
     this->curr_word="";
     this->iter=iter;
 }
 
+/**
+      @brief Sobrecarga del operador *.
+      @post En este caso devolveremos la current word.
+**/
 std::string Dictionary::iterator::operator*() {
     return this->curr_word;
 }
 
+/**
+      @brief Sobrecarga del operador ++.
+      @post Mientras que la letra actual (nodo) no sea una palabra válida establecemos ciertas reglas con el current_level del iterador interno que vayan modificando la current
+      word hasta dar con la próxima palabra válida, y devolvemos ese iterador.
+**/
 Dictionary::iterator &Dictionary::iterator::operator++() {
     int curr_level;
     while(this->iter.operator*().valid_word == false){
         curr_level = this->iter.get_level();
-        this->iter = this->iter.operator++();
+        this->iter.operator++();
         if (this->iter.get_level() == curr_level+1){
             this->curr_word += this->iter.operator*().character;
         }
@@ -184,22 +202,40 @@ Dictionary::iterator &Dictionary::iterator::operator++() {
             this->curr_word.pop_back();
         }
     }
+ 
+    return *this;
 }
 
+/**
+      @brief Sobrecarga del operador ==.
+      @post Comparamos si los dos iteradores internos de tree<char_info> sean iguales.
+**/
 bool Dictionary::iterator::operator==(const iterator &other) {
     return  (this->iter == other.iter);
 }
 
+/**
+      @brief Sobrecarga del operador !=.
+      @post Comparamos si los dos iteradores internos de tree<char_info> sean desiguales.
+**/
 bool Dictionary::iterator::operator!=(const iterator &other) {
     return (this->iter != other.iter);
 }
 
+/**
+      @brief Método begin() del iterador de diccionario.
+      @post Colocamos el iterador interno en su begin().
+**/
 Dictionary::iterator Dictionary::begin() const {
     iterator it;
     it=this->words.cbegin_preorder();
     return it;
 }
 
+/**
+      @brief Método end() del iterador de diccionario.
+      @post Colocamos el iterador interno en su end().
+**/
 Dictionary::iterator Dictionary::end() const {
     iterator it;
     it=this->words.cend_preorder();
