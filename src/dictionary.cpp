@@ -188,7 +188,17 @@ std::string Dictionary::iterator::operator*() {
 **/
 Dictionary::iterator &Dictionary::iterator::operator++() {
     int curr_level;
-    while(this->iter.operator*().valid_word == false){
+    string previous_word=this->curr_word;
+
+    if (this->curr_word == ""){
+        this->iter.operator++();
+    }
+
+    /*if(this->curr_word == previous_word){
+        this->iter.operator++();
+    }*/
+
+    while(this->iter.operator*().valid_word == false || previous_word == this->curr_word){
         curr_level = this->iter.get_level();
         this->iter.operator++();
         if (this->iter.get_level() == curr_level+1){
@@ -202,7 +212,7 @@ Dictionary::iterator &Dictionary::iterator::operator++() {
             this->curr_word.pop_back();
         }
     }
- 
+
     return *this;
 }
 
