@@ -14,31 +14,31 @@
 ///////////////////////////////////////////////////////////////////////////////
 
 Dictionary::node Dictionary::findLowerBoundChildNode(char character, Dictionary::node current) {
-  node prev_child, curr_child = current.left_child();
+    node prev_child, curr_child = current.left_child();
 
-  for (; !curr_child.is_null() && (*curr_child).character <= character; curr_child = curr_child.right_sibling()){
-    prev_child = curr_child;
-    if ((*curr_child).character == character) {
-      return curr_child;
+    for (; !curr_child.is_null() && (*curr_child).character <= character; curr_child = curr_child.right_sibling()){
+        prev_child = curr_child;
+        if ((*curr_child).character == character) {
+            return curr_child;
+        }
     }
-  }
-  if (!prev_child.is_null()) {
-    return prev_child;
-  }
-  return current;
+    if (!prev_child.is_null()) {
+        return prev_child;
+    }
+    return current;
 }
 
 Dictionary::node Dictionary::insertCharacter(char character, Dictionary::node current) {
-  node insertion_position = findLowerBoundChildNode(character, current);
-  if (insertion_position == current){
-    this->words.insert_left_child(current, char_info(character));
-    return insertion_position.left_child();
-  } else if ((*insertion_position).character != character){
-    this->words.insert_right_sibling(insertion_position, char_info(character));
-    return insertion_position.right_sibling();
-  } else {
-    return insertion_position;
-  }
+    node insertion_position = findLowerBoundChildNode(character, current);
+    if (insertion_position == current){
+        this->words.insert_left_child(current, char_info(character));
+        return insertion_position.left_child();
+    } else if ((*insertion_position).character != character){
+        this->words.insert_right_sibling(insertion_position, char_info(character));
+        return insertion_position.right_sibling();
+    } else {
+        return insertion_position;
+    }
 }
 
 /*int Dictionary::getOccurrences(node curr_node, char c){
@@ -54,69 +54,69 @@ std::pair<int, int> Dictionary::getTotalUsages(node curr_node, char c){
 ///////////////////////////////////////////////////////////////////////////////
 
 Dictionary::Dictionary() {
-  this->words.set_root(char_info());
-  this->total_words = 0;
+    this->words.set_root(char_info());
+    this->total_words = 0;
 }
 
 Dictionary::Dictionary(const Dictionary &other) {
-  this->words = other.words;
-  this->total_words = other.total_words;
+    this->words = other.words;
+    this->total_words = other.total_words;
 }
 
 Dictionary::~Dictionary() {
-  this->words.clear();
+    this->words.clear();
 }
 
 bool Dictionary::exists(const std::string & word) {
-  node current = this->words.get_root();
-  for (int i = 0; i < word.size(); ++i){
-    current = this->findLowerBoundChildNode(word[i], current);
-    if ((*current).character != word[i]) {
-      return false;
+    node current = this->words.get_root();
+    for (int i = 0; i < word.size(); ++i){
+        current = this->findLowerBoundChildNode(word[i], current);
+        if ((*current).character != word[i]) {
+            return false;
+        }
     }
-  }
 
-  return (*current).valid_word;
+    return (*current).valid_word;
 }
 
 bool Dictionary::insert(const std::string &word) {
-  node current = this->words.get_root();
-  for (int i = 0; i < word.size(); ++i){
-    current = this->insertCharacter(word[i], current);
-  }
+    node current = this->words.get_root();
+    for (int i = 0; i < word.size(); ++i){
+        current = this->insertCharacter(word[i], current);
+    }
 
-  if (!(*current).valid_word) {
-    (*current).valid_word = true;
-    this->total_words++;
-    return true;
-  }
+    if (!(*current).valid_word) {
+        (*current).valid_word = true;
+        this->total_words++;
+        return true;
+    }
 
-  return false;
+    return false;
 }
 
 bool Dictionary::erase(const std::string & val){
-  node current = this->words.get_root();
-  for (int i = 0; i < val.size(); ++i){
-    current = this->findLowerBoundChildNode(val[i], current);
-    if ((*current).character != val[i]) {
-      return false;
+    node current = this->words.get_root();
+    for (int i = 0; i < val.size(); ++i){
+        current = this->findLowerBoundChildNode(val[i], current);
+        if ((*current).character != val[i]) {
+            return false;
+        }
     }
-  }
-  if ((*current).valid_word){
-    (*current).valid_word = false;
-    this->total_words--;
-    return true;
-  }
-  return false;
+    if ((*current).valid_word){
+        (*current).valid_word = false;
+        this->total_words--;
+        return true;
+    }
+    return false;
 }
 
 Dictionary &Dictionary::operator=(const Dictionary &dic){
-  if (this != &dic){
-    this->words.clear();
-    this->words = dic.words;
-    this->total_words = dic.total_words;
-  }
-  return *this;
+    if (this != &dic){
+        this->words.clear();
+        this->words = dic.words;
+        this->total_words = dic.total_words;
+    }
+    return *this;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -131,11 +131,11 @@ Dictionary &Dictionary::operator=(const Dictionary &dic){
 }*/
 
 std::istream& operator>>(std::istream &is, Dictionary &dict){
-  std::string curr_word;
-  while (getline(is, curr_word)){
-    dict.insert(curr_word);
-  }
-  return is;
+    std::string curr_word;
+    while (getline(is, curr_word)){
+        dict.insert(curr_word);
+    }
+    return is;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -187,14 +187,10 @@ std::string Dictionary::iterator::operator*() {
       word hasta dar con la próxima palabra válida, y devolvemos ese iterador.
 **/
 Dictionary::iterator &Dictionary::iterator::operator++() {
-    int curr_level;
+    int curr_level= this->iter.get_level();
+
     string previous_word=this->curr_word;
     string root="";
-    /*
-    if (this->curr_word == root){
-        this->iter.operator++();
-    }
-    */
     while(this->iter.operator*().valid_word == false || previous_word == this->curr_word){
         curr_level = this->iter.get_level();
         this->iter.operator++();
@@ -204,9 +200,16 @@ Dictionary::iterator &Dictionary::iterator::operator++() {
         else if (this->iter.get_level() == curr_level){
             this->curr_word.at(this->curr_word.length()-1)=this->iter.operator*().character;
         }
-        else if (this->iter.get_level() == curr_level-1){
-            this->curr_word.erase(this->curr_word.length()-1);
+        else if (this->iter.get_level() < curr_level){
+            if(this->curr_word!=root) {
+                for (int i = 0; i < (curr_level - this->iter.get_level()) + 1; i++) {
+                    if(this->curr_word!=root)this->curr_word.erase(this->curr_word.length() - 1);
+                }
+                if(this->iter.get_level()!=0)this->curr_word += this->iter.operator*().character;
+                else return *this;
+            }
         }
+
     }
 
     return *this;
