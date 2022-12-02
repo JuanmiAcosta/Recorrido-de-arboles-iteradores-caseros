@@ -189,15 +189,12 @@ std::string Dictionary::iterator::operator*() {
 Dictionary::iterator &Dictionary::iterator::operator++() {
     int curr_level;
     string previous_word=this->curr_word;
-
-    if (this->curr_word == ""){
+    string root="";
+    /*
+    if (this->curr_word == root){
         this->iter.operator++();
     }
-
-    /*if(this->curr_word == previous_word){
-        this->iter.operator++();
-    }*/
-
+    */
     while(this->iter.operator*().valid_word == false || previous_word == this->curr_word){
         curr_level = this->iter.get_level();
         this->iter.operator++();
@@ -205,11 +202,10 @@ Dictionary::iterator &Dictionary::iterator::operator++() {
             this->curr_word += this->iter.operator*().character;
         }
         else if (this->iter.get_level() == curr_level){
-            this->curr_word.pop_back();
-            this->curr_word += this->iter.operator*().character;
+            this->curr_word.at(this->curr_word.length()-1)=this->iter.operator*().character;
         }
         else if (this->iter.get_level() == curr_level-1){
-            this->curr_word.pop_back();
+            this->curr_word.erase(this->curr_word.length()-1);
         }
     }
 
