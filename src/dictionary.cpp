@@ -41,13 +41,48 @@ Dictionary::node Dictionary::insertCharacter(char character, Dictionary::node cu
     }
 }
 
-/*int Dictionary::getOccurrences(node curr_node, char c){
+int Dictionary::getOccurrences(node curr_node, char c){
+    int numOcurrencesCurrent=0,
+        numOcurrencesChild=0,
+        numOcurrencesSibling=0;
 
+    if(curr_node.operator*().character==::tolower(c))
+        numOcurrencesCurrent++;
+
+    if(!curr_node.left_child().is_null())
+        numOcurrencesChild=getOccurrences(curr_node.left_child(),c);
+
+    if(!curr_node.right_sibling().is_null())
+        numOcurrencesSibling=getOccurrences(curr_node.right_sibling(),c);
+
+    return numOcurrencesCurrent+numOcurrencesChild+numOcurrencesSibling;
 }
 
 std::pair<int, int> Dictionary::getTotalUsages(node curr_node, char c){
+    pair<int,int> numTotalUsages;
+    numTotalUsages.first=0;
+    numTotalUsages.second=0;
+    pair<int,int> numTotalUsagesChild;
+    pair<int,int> numTotalUsagesSibling;
 
-}*/
+
+    if(!curr_node.left_child().is_null())
+        numTotalUsagesChild=getTotalUsages(curr_node.left_child(),c);
+    if(!curr_node.right_sibling().is_null())
+        numTotalUsagesSibling=getTotalUsages(curr_node.right_sibling(),c);
+
+    numTotalUsages.first=numTotalUsagesChild.first+numTotalUsagesSibling.first;
+    numTotalUsages.second=numTotalUsagesChild.second+numTotalUsagesSibling.second;
+
+    if(curr_node.operator*().character == ::tolower(c))numTotalUsages.first+=numTotalUsagesChild.second;
+    if(curr_node.operator*().valid_word){
+        numTotalUsages.second++;
+        if(curr_node.operator*().character == ::tolower(c))numTotalUsages.first++;
+    }
+
+    return numTotalUsages;
+
+}
 
 ///////////////////////////////////////////////////////////////////////////////
 //                              Public functions                             //
@@ -142,13 +177,13 @@ std::istream& operator>>(std::istream &is, Dictionary &dict){
 //                            Recursive counters                             //
 ///////////////////////////////////////////////////////////////////////////////
 
-/*int Dictionary::getOccurrences(const char c){
-
+int Dictionary::getOccurrences(const char c){
+    return getOccurrences(this->words.get_root(),c);
 }
 
 int Dictionary::getTotalUsages(const char c){
-
-}*/
+    return getTotalUsages(this->words.get_root(),c).first;
+}
 
 ///////////////////////////////////////////////////////////////////////////////
 //                                 Iterator                                  //
@@ -201,17 +236,13 @@ Dictionary::iterator &Dictionary::iterator::operator++() {
             this->curr_word.at(this->curr_word.length()-1)=this->iter.operator*().character;
         }
         else if (this->iter.get_level() < curr_level){
-            if(this->curr_word!=root) {
-                for (int i = 0; i < (curr_level - this->iter.get_level()) + 1; i++) {
-                    if(this->curr_word!=root)this->curr_word.erase(this->curr_word.length() - 1);
-                }
-                if(this->iter.get_level()!=0)this->curr_word += this->iter.operator*().character;
-                else return *this;
+            for (int i = 0; i < (curr_level - this->iter.get_level()) + 1; i++) {
+                if(this->curr_word!=root)this->curr_word.erase(this->curr_word.length() - 1);
             }
+            if(this->iter.get_level()!=0)this->curr_word += this->iter.operator*().character;
+            else return *this;
         }
-
     }
-
     return *this;
 }
 
@@ -238,6 +269,7 @@ bool Dictionary::iterator::operator!=(const iterator &other) {
 Dictionary::iterator Dictionary::begin() const {
     iterator it;
     it=this->words.cbegin_preorder();
+    ++it;
     return it;
 }
 
