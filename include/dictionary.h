@@ -84,8 +84,19 @@ private:
      */
     node insertCharacter(char character, node current);
 
+    /**
+     * @brief Método privado llamado por el método público "getOccurrences" público
+     * @param curr_node Root del "words" interno del dictionary (tree<char_info>)
+     * @param c El caracter del que se sacará la información.
+     * @return Devuelve el número de ocurrencias en el árbol
+     */
     int getOccurrences(node curr_node, char c);
-
+    /**
+     * @brief Método privado llamado por el método público "getTotalUsages"
+     * @param curr_node Root del "words" interno del dictionary (tree<char_info>)
+     * @param c El caracter del que se sacará la información.
+     * @return Devuelve el número de usos de la letra en el diccionario
+     */
     std::pair<int, int> getTotalUsages(node curr_node, char c);
 
 public:
@@ -190,9 +201,17 @@ public:
     friend ostream &operator<<(ostream &os, const Dictionary &dic);
 
     //////////////////////////////////////////////// Recursive functions ///////////////////////////////////////////////
-
+    /**
+      @brief Se le pasa la letra de la cuál queremos saber su número de ocurrencias en el árbol.
+      @param c Letra de la que sacaremos la información.
+      @post Nos devuelve su número de ocurrencias.
+**/
     int getOccurrences(const char c);
-
+/**
+      @brief Se le pasa la letra de la cuál queremos saber su número de usu en el diccionario.
+      @param c Letra de la que sacaremos la información.
+      @post Nos devuelve su número de usos.
+**/
     int getTotalUsages(const char c);
 
     ///////////////////////////////////////////////////// Iterator ////////////////////////////////////////////////////
@@ -203,23 +222,56 @@ public:
         tree<char_info>::const_preorder_iterator iter;
 
     public:
-
+        /**
+      @brief Constructor por defecto del iterador de diccionario.
+      @post La current word será vacía, y el iterador interno de tree<char_info> usa el constructor po defecto.
+**/
         iterator();
 
+        /**
+      @brief Constructor de copia del iterador de diccionario.
+      @param iter es un iterador de tree<char_info>.
+      @post También pone la current word vacía e iguala el iterador interno al pasado como argumento.
+**/
         iterator(tree<char_info>::const_preorder_iterator iter);
 
+        /**
+      @brief Sobrecarga del operador *.
+      @post En este caso devolveremos la current word.
+**/
         std::string operator*();
 
+        /**
+      @brief Sobrecarga del operador ++.
+      @post Mientras que la letra actual (nodo) no sea una palabra válida establecemos ciertas reglas con el current_level del iterador interno que vayan modificando la current
+      word hasta dar con la próxima palabra válida, y devolvemos ese iterador.
+**/
         iterator &operator++();
 
+        /**
+      @brief Sobrecarga del operador ==.
+      @post Comparamos si los dos iteradores internos de tree<char_info> sean iguales.
+**/
         bool operator==(const iterator &other);
 
+        /**
+      @brief Sobrecarga del operador !=.
+      @post Comparamos si los dos iteradores internos de tree<char_info> sean desiguales.
+**/
         bool operator!=(const iterator &other);
 
     };
 
+    /**
+      @brief Método begin() del iterador de diccionario.
+      @post Colocamos el iterador interno en su begin().
+**/
     iterator begin() const;
 
+    /**
+      @brief Método end() del iterador de diccionario.
+      @post Colocamos el iterador interno en su end().
+**/
     iterator end() const;
 
     ///////////////////////////////////////////////// Letters Iterator /////////////////////////////////////////////////
