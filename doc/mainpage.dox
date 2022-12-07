@@ -1,11 +1,140 @@
-/*! \mainpage Título de la página principal
+/*! \mainpage TDA Árbol aplicado al juego de las letras
+
+@image html ugr.png
+### Realizado por Juan Miguel Acosta ortega y Luis Soto Torres
 
 # Introducción
 
-A RELLENAR POR EL ESTUDIANTE
+Entendemos por __árbol__ una estructura de datos formada por varios objetos
+colocados en una forma semejante a un árbol biológico, es decir, los objetos
+parece que están sobre las ramas de un árbol, recordemos un árbol genealógico,
+uno de los objetos es la raíz, y los demás están colocados en las ramas. Así, un
+árbol está formado por varios objetos, (un número finito), y varias líneas llamadas
+ramas, que sirven para unir o conectar los objetos.
+<br>
+“Se define un árbol como una estructura de datos formada por varios objetos,
+(una cantidad finita), llamados nodos y varias líneas que conectan esos nodos,
+(la cantidad de líneas es finita), denominadas ramas”.
+<br><br>
+__Joyanes Aguilar & Zahonero Martínez, 2008__
+“En modo formal un árbol de tipo T, se define como la estructura homogénea que
+resulta de la concatenación de un elemento tipo T (la raíz), y de un número finito
+de árboles ajenos o disjuntos, denominados subárboles; un árbol puede ser una
+estructura vacía”.
+<br><br>
+__Silva Guardati, 2006__
+Los subárboles son árboles también, así un árbol es una estructura recursiva, y
+por tanto, es posible utilizar rutinas recursivas para generar un árbol.
+Existen varias áreas de conocimiento donde se han utilizado árboles, por
+ejemplo, en los árboles genealógicos, en los circuitos eléctricos, y algunas otras,
+hay diversas formas de representar un árbol.
+
+Para esta práctica se va a trabajar tanto con iteradores que recorran un árbol en preorden basándonos en un
+iterador predefinido del preorden de un árbol que trabaje directamente con sus punteros, con un TDA Solver que según un
+diccionario y un lettersset solucione el juego de las letras según longitud o puntuación...
 
 # Ejecutables
+<br>
+## 1º Parte: Iterador del diccionario
 
-A RELLENAR POR EL ESTUDIANTE
+En esta primera parte se ha de implementar el iterador del diccionario, y este a su vez estará basado en un iterador en preorden de un "tree<char_info>",
+siendo "char_info" un struct que conlleva el "character" (label) del nodo actual, y si es o no una "valid_word".
 
+El iterador del diccionario tendrá en sus atributos privados por otra parte la "curr_word", la palabra formada hasta ese momento, y el iterador anteriormente nombrado.
+
+De esta manera se han de implementar ciertos métodos que serán utilizados para recorrer el árbol y así mostrar sus palabras:
+
+#### iterator();
+
+Se implementa el constructor por defecto que pondrá la palabra actual a vacía (" "), y el iterador de tree<char_info> se inicializartá por defecto.
+
+#### iterator(tree<char_info>::const_preorder_iterator iter);
+
+También pone la current word vacía e iguala el iterador interno al pasado como argumento.
+
+#### std::string operator*();
+
+Este operador tiene la función de devolver la "curr_word" del iterador de dictionary que tenga formada en ese momento
+
+<div style="color:red;font-weight:bold;">iterator &operator++();</div>
+
+Este operador es el más curioso de implementar en esta primera parte, por lo menos desde la experiencia personal, y es que este iterador es el que, basándose
+en el operator++() del tree<char_info> va recorriendo el dictionary y formando sus palabras.
+El fallo que se daba en un principio es el de que cuándo se tenga que subir por el árbol se ha de tener en cuenta que puedes haber subido más de un nivel, eso significa
+que tienes que quitar tantas letras de la curr_word como niveles hayas subido.
+
+Además hay varias partes en las que se ha de tener en cuenta que no tienes que leer la raíz que sabemos que es Null, que se ha de cambiar la última letra
+cuando los nodos que visitamos son hermanos...
+
+#### bool operator==(const iterator &other);
+
+Se comprueba que los iteradores internos sean iguales.
+
+#### bool operator|=(const iterator &other);
+
+Se comprueba que los iteradores internos sean diferentes.
+
+#### iterator begin() const;
+
+Colocamos el iterador interno en su begin().
+
+#### iterator end() const;
+
+Colocamos el iterador interno en su end().
+
+En resumen de un árbol de la siguiente manera, que es la estructura definida para un dictionary, se saca la siguiente lista:
+
+@image html arbol_mini.png
+<br>
+@image html lista_mini.png
+<br>
+
+## 2º Parte: Conteo de usos y Ocurrencias
+
+En esta segunda parte de la práctica se sigue desarrollando la clase dictionary para de una vez por todas intentar solucionar el juego de las dos maneras comentadas en primera instancia; por longitud o puntaje.
+Para ello se implementan dos métodos públicos que llaman a su vez a sus respectivos métodos privados, estos son getOccurences y getUsages.
+
+Estos dos métodos tienen la siguiente diferencia principal, y es que el método __getOcurrencias__ se encarga de  devolver el número de ocurrencias del carácter que se pasa como argumento en
+nuestro árbol Para implementar esta función de forma recursiva, necesitaremos una función auxiliar,
+que implementaremos como privada, y que recibirá como parámetros el carácter con el que
+estamos trabajando y el nodo en el que nos encontramos:
+<br>
+<div style="background-color:grey;border-color:black;border-width:thick;border-style:inset ;">
+<center style="color:orange;">` private: int getOccurrences(node current_node, char c)`</center>
+</div>
+
+ <br>
+ Dicha función deberá contar las ocurrencias de la letra en el subárbol que cuelga del nodo
+ current_node. Para ello, se deberá comprobar si la letra que hay almacenada en dicho nodo es
+ el carácter con el que estamos trabajando, y a continuación llamar de forma recursiva a la misma
+ función sobre el hijo a la izquierda y el hermano a la derecha de dicho nodo (siempre que no sean
+ nulos). Finalmente, se suman los tres valores y se devuelven.
+
+Mientras que el método __getUsages__  se encarga de contar el número de usos de la letra para formar palabras en el diccionario.
+ De nuevo, vamos a resolver este problema utilizando una función auxiliar que trabaje
+de forma recursiva.Esta función nos va a devolver una pareja de valores, el número de ocurrencias del carácter en los
+nodos que cuelgan del nodo actual, y el número de palabras que terminan por debajo del nodo
+actual.
+<br>
+<div style="background-color:grey;border-color:black;border-width:thick;border-style:inset ;">
+<center style="color:orange;">`private: pair<int, int> getTotalUsages(node curr_node, char c)`</center>
+</div>
+<br>
+Estos dos métodos tienen la particularidad de que su implementación está prácticamente orientada a la __recursividad__ puesto que en las dos contemplamos un nodo que pasamos como argumento a la función, y este a su vez a sus hijos, hermanos...
+
+@image html arbol_mini.png
+<br>
+@image html ocu_usa.png
+<br>
+
+## 2º Resolución del juego de las letras
+
+En la práctica anterior se desarrollaron todos los TDAs necesarios para resolver el juego de las
+letras. En la primera parte de esta práctica, se ha explorado el uso de un contenedor alternativo (un
+árbol LCRS) para implementar el TDA Dictionary, comprobándose la mejora que supone en
+memoria. Ahora que tenemos todas estas estructuras de datos, estamos listos para resolver el
+juego de las letras.
+Un solver es un sistema que resuelve un problema de forma automática. En nuestro caso, vamos a
+programar un solver para el juego de las letras. Este solver tiene que ser capaz de dar la/s mejor/es
+solución/es dado un diccionario, un conjunto de letras, un modo de juego, y un número de letras.
 */
