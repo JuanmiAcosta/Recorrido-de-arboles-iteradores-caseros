@@ -66,8 +66,8 @@ public:
         T aux2;
         srand(time(NULL));
         aux=rand()%v.size();
-        aux2= v.at(aux);
-        v.at(aux)=v.at(v.size()-1);
+        aux2= v[aux];
+        v[aux]=v[v.size()-1];
         v.pop_back();
         return aux2;
     }

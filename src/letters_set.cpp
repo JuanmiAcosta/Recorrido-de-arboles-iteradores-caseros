@@ -59,7 +59,7 @@ int LettersSet::getScore (string word){ // SE PUEDE HACER CON TOUPPER, YA SE HAR
         char letra_mayu=(*it);
 
         if ((*it) >= COMIENZO_MINUS && (*it) <= FINAL_MINUS){//comienzo de letras mayu
-            letra_mayu = toupper((*it)); //distancia de letra min a letra mayu
+            letra_mayu = ((*it)); //distancia de letra min a letra mayu
         }
         suma += this->getLetters()[letra_mayu].score;
 
@@ -76,7 +76,7 @@ ostream& operator << (ostream &os, const LettersSet &cl){
     LettersSet map_aux(cl);
 
     for (it=map_aux.getLetters().begin() ; it!=map_aux.getLetters().end(); ++it){
-        os << "\nLa letra " << it->first << " está " << it->second.repetitions << " veces repetida, y tiene punt. de " << it->second.score;
+        os << "\nLa letra " << (*it).first << " está " << (*it).second.repetitions << " veces repetida, y tiene punt. de " << (*it).second.score;
     }
     return os;
 }
@@ -89,7 +89,7 @@ istream& operator >>(istream &is, LettersSet &cl){
         aux.repetitions=Cant;
         aux.score=Punt;
         pair <char, LetterInfo> futLetters;
-        futLetters.first=Letra;
+        futLetters.first=toupper(Letra);
         futLetters.second=aux;
         cl.insert(futLetters);
     }

@@ -89,7 +89,7 @@ En resumen de un árbol de la siguiente manera, que es la estructura definida pa
 @image html lista_mini.png
 <br>
 
-## 2º Parte: Conteo de usos y Ocurrencias
+## 2º Parte: Conteo de Usos y Ocurrencias
 
 En esta segunda parte de la práctica se sigue desarrollando la clase dictionary para de una vez por todas intentar solucionar el juego de las dos maneras comentadas en primera instancia; por longitud o puntaje.
 Para ello se implementan dos métodos públicos que llaman a su vez a sus respectivos métodos privados, estos son getOccurences y getUsages.
@@ -127,7 +127,7 @@ Estos dos métodos tienen la particularidad de que su implementación está prá
 @image html ocu_usa.png
 <br>
 
-## 2º Resolución del juego de las letras
+## 3º Parte: Resolución del juego de las letras
 
 En la práctica anterior se desarrollaron todos los TDAs necesarios para resolver el juego de las
 letras. En la primera parte de esta práctica, se ha explorado el uso de un contenedor alternativo (un
@@ -137,4 +137,20 @@ juego de las letras.
 Un solver es un sistema que resuelve un problema de forma automática. En nuestro caso, vamos a
 programar un solver para el juego de las letras. Este solver tiene que ser capaz de dar la/s mejor/es
 solución/es dado un diccionario, un conjunto de letras, un modo de juego, y un número de letras.
+
+El método principal de esta parte de la práctica es el __getSolutions__, y es que es este métopdo el encargado de hacer el cómputo de las posibles soluciones (ya que pueden haber varias, misma longitud, mismo puntaje...), y de dar cuál es la solución
+o puntuación ganadora en esa partida. Es por esto que se devuelve un pair<vector<string>,int>.
+
+Para ayudar a la clase y al método principal a ser más claros y entendibles se han desarrollado ciertos métodos auxiliares para simplificar un poco la implementación.
+Estos han sido en nuestro caso métodos como el __vector<char> toVector(string palabra);__ , método utilizado para convertir una palabra del diccionario interno en vector de char, con el que es más fácil trabajar dentro del método:
+<div style="background-color:grey;border-color:black;border-width:thick;border-style:inset ;">
+<center style="color:orange;">`for(Dictionary::iterator it = dict.begin();it != dict.end(); ++it){
+                                       `</center>
+</div>
+<div style="background-color:grey;border-color:black;border-width:thick;border-style:inset ;">
+<center style="color:orange;">`
+                                       LettersSet aux= getLetterSet(toVector(*it));`</center>
+</div>
+
+Según el tipo de juego que se elija en el método se hará el cómputo de encontrar las palabras con mayor longitud, o de mayor puntaje.
 */

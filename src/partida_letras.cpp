@@ -38,7 +38,7 @@ int main(int argc, char *argv[]){
 
     file2>>lettersSet;
 
-    char modo=argv[3][0];
+    bool modo=argv[3];
     bool modoJuego=false;
     if(modo=='P')modoJuego=true;
 
@@ -52,7 +52,7 @@ int main(int argc, char *argv[]){
 
     cout<<"LETRAS DISPONIBLES:"<<endl;
     for(int i=0; i<letras.size();i++){
-        letras[i]= ::toupper(letras[i]);
+        //letras[i]= ::toupper(letras[i]);
         if(i!=letras.size()-1)cout<<((letras[i]))<<" ";
         else cout<<((letras[i])) << endl;
     }
